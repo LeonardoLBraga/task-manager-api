@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const taskController = require("../controllers/taskController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-// Rountes for task management
-router.post("/", taskController.createTask);
-router.get("/", taskController.getAllTasks);
-router.get("/:id", taskController.getTaskById);
-router.put("/:id", taskController.updateTask);
-router.delete("/:id", taskController.deleteTask);
+router.post("/", authMiddleware, taskController.createTask);
+router.get("/", authMiddleware, taskController.getAllTasks);
+router.get("/:id", authMiddleware, taskController.getTaskById);
+router.put("/:id", authMiddleware, taskController.updateTask);
+router.delete("/:id", authMiddleware, taskController.deleteTask);
 
 module.exports = router;
