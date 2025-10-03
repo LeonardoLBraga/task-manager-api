@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 
-const SECRET_KEY = process.env.JWT_SECRET || "supersecret"; // use .env
+const SECRET_KEY = process.env.JWT_SECRET;
 
 
 exports.register = async (req, res) => {
