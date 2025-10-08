@@ -1,44 +1,50 @@
-const TaskModel = require("../models/taskModel");
+const { updateTaskSchema, createTaskSchema } = require("../schemas/taskSchema");
+const TaskService = require("../services/taskService");
 
 exports.createTask = (req, res) => {
-  const task = TaskModel.createTask(req.body.title, req.body.description);
-  return res.status(201).json(task);
+  try {
+    const parsed = createTaskSchema.parse(req.body);
+    const task = TaskService.createTask(parsed.title, parsed.description);
+    return res.status(201).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error: error.errors });
+  }
 };
 
 exports.getAllTasks = (req, res) => {
-  const tasks = TaskModel.getAllTasks();
+  const tasks = TaskService.getAllTasks();
   res.status(200).json(tasks);
 };
 
 exports.getTaskById = (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const task = TaskModel.getTaskById(id);
+  const task = TaskService.getTaskById(id);
 
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
+  if (!task) return res.status(404).json({ error: "Task not found" });
 
   res.status(200).json(task);
 };
 
 exports.updateTask = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const updated = TaskModel.updateTask(id, req.body);
+  try {
+    const parsed = updateTaskSchema.partial().parse(req.body);
+    const id = parseInt(req.params.id, 10);
+    const updated = TaskService.updateTask(id, parsed);
 
-  if (!updated) {
-    return res.status(404).json({ error: "Task not found" });
+    if (!updated) return res.status(404).json({ error: "Task not found" });
+
+    res.status(200).json(updated);
+  } catch (error) {
+    return res.status(400).json({ error: error.errors });
   }
-
-  res.status(200).json(updated);
 };
 
 exports.deleteTask = (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const deleted = TaskModel.deleteTask(id);
+  const deleted = TaskService.deleteTask(id);
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Task not found" });
-  }
+  if (!deleted) return res.status(404).json({ error: "Task not found" });
 
   res.status(204).send();
 };
