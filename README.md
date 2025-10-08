@@ -25,6 +25,7 @@ task-manager-api/
 │   ├── models/          # Data structures
 │   ├── routes/          # API routes
 │   ├── utils/           # Helpers (schemas, etc)
+│   ├── services/        # Services (business)
 │   ├── app.js           # Express config
 │   └── server.js        # App entry point
 │
