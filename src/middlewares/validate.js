@@ -3,7 +3,19 @@ const validate = (schema) => (req, res, next) => {
     req.body = schema.parse(req.body);
     next();
   } catch (err) {
-    return res.status(400).json({ error: err.errors });
+    if (err.errors) {
+      return res.status(400).json({
+        errors: err.errors.map((e) => ({
+          path: e.path.join("."),
+          message: e.message,
+        })),
+      });
+    }
+
+    return res.status(500).json({
+      error: "Internal validation error",
+      details: err.message,
+    });
   }
 };
 
